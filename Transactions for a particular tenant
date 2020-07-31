@@ -1,0 +1,17 @@
+SELECT t.scode 'Tenant Code',
+        ts.sinvnum 'Invoice Id',
+        ct.sname 'Charge Description',
+        ic.sCode 'Currency',
+      CASE 
+		    WHEN bopen = 0 THEN 'Fully Paid'
+        WHEN bopen = -1 THEN 'Unpaid'
+      END AS 'Payment Status',
+        ts.stranamount + ts.svatamount 'Total Amount'
+FROM trans ts
+LEFT JOIN chargtyp ct ON ct.hmy = ts.hretentionacct
+LEFT JOIN intcurrency_info ic ON ic.hmy = ts.htrancurrency
+LEFT JOIN tenant t ON t.hmyperson = ts.hperson 
+WHERE t.scode = 't0004384'
+	  AND ts.bopen = 0 /*-1*/
+    AND hoffsetacct != 427
+    AND ts.uref IS NOT NULL
