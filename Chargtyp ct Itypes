@@ -1,0 +1,6 @@
+CASE
+    WHEN ct.itype = 0 THEN 'Cam Charge Code'
+    WHEN ct.itype = 1 THEN 'Overage Charge Code'
+    WHEN ct.itype = 2 THEN 'Rent'
+    WHEN ct.itype = 3 THEN 'Misc'
+END AS 'Charge Type'
