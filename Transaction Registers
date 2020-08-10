@@ -9,11 +9,18 @@ SELECT
     (tr.hparent2 - 1600000000) AS 'Batch',
     tr.uref AS 'Control',
     o.ucode AS 'Legal Entity',
-    p.scode AS 'Property'
+    p.scode AS 'Property',
+    ct.scode AS 'Charge Code',
+    ct.sname AS 'Charge Description',
+    ic.scode AS 'Base Curr.',
+    tr.suserdefined2 AS 'Reference',
+    tr.snotes AS 'Notes'
 From Trans tr
 LEFT JOIN Tenant t ON t.hmyperson = tr.hperson
 LEFT JOIN Property p ON p.hmy = tr.hprop
 LEFT JOIN Owner o ON o.hmyperson = p.hlegalentity
+LEFT JOIN Chargtyp ct ON ct.hmy = tr.hretentionacct
+LEFT JOIN Intcurrency_info ic ON ic.hmy = tr.htrancurrency
 WHERE p.scode = 'd_prop1'
 	AND tr.itype = 7
 	AND t.scode IS NOT NULL
