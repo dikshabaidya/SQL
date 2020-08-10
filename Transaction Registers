@@ -1,11 +1,20 @@
-select top 10
-	sinvnum,
-    format((tr.upostdate), 'MM/yyyy') AS 'Period', 
-    tr.dtexchangerate AS 'Due Date',
-    tr.sdatecreated AS 'Invoice Date',
-	t.scode,
-    p.scode,
-    * from trans tr
-Left Join Tenant t ON t.hmyperson = tr.hperson
+SELECT
+	sinvnum AS 'Doc. Seq. No.',
+    FORMAT((tr.upostdate), 'MM/yyyy') AS 'Period', 
+    FORMAT(tr.dtexchangerate, 'MM/dd/yyyy') AS 'Due Date',
+    FORMAT(tr.sdateoccurred, 'MM/dd/yyyy') AS 'Invoice Date',
+    FORMAT(tr.sotherdate2, 'MM/dd/yyyy') AS 'From Date',
+    FORMAT(tr.sotherdate3, 'MM/dd/yyyy') AS 'To Date',
+    t.slastname + '(' + t.scode + ')'  AS 'Charge To',
+    (tr.hparent2 - 1600000000) AS 'Batch',
+    tr.uref AS 'Control',
+    o.ucode AS 'Legal Entity',
+    p.scode AS 'Property'
+From Trans tr
+LEFT JOIN Tenant t ON t.hmyperson = tr.hperson
 LEFT JOIN Property p ON p.hmy = tr.hprop
-WHERE p.scode = 'ac_prop1'
+LEFT JOIN Owner o ON o.hmyperson = p.hlegalentity
+WHERE p.scode = 'd_prop1'
+	AND tr.itype = 7
+	AND t.scode IS NOT NULL
+    AND tr.hoffsetacct !=427
