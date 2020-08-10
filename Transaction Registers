@@ -13,6 +13,8 @@ SELECT
     ct.scode AS 'Charge Code',
     ct.sname AS 'Charge Description',
     ic.scode AS 'Base Curr.',
+    tr.stranamount + tr.svatamount AS 'Gross Amount',
+    tr.stotalamount + tr.svatamount AS 'Amount Paid',
     tr.suserdefined2 AS 'Reference',
     tr.snotes AS 'Notes'
 From Trans tr
