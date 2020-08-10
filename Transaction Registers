@@ -1,0 +1,11 @@
+select top 10
+	sinvnum,
+    format((tr.upostdate), 'MM/yyyy') AS 'Period', 
+    tr.dtexchangerate AS 'Due Date',
+    tr.sdatecreated AS 'Invoice Date',
+	t.scode,
+    p.scode,
+    * from trans tr
+Left Join Tenant t ON t.hmyperson = tr.hperson
+LEFT JOIN Property p ON p.hmy = tr.hprop
+WHERE p.scode = 'ac_prop1'
