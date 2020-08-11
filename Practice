@@ -26,4 +26,4 @@ LEFT JOIN Commamendments ca ON ca.htenant = t.hmyperson
 LEFT JOIN Chargtyp ct ON ct.hmy = cr.hchargecode
 LEFT JOIN Detail d ON d.htenant = t.hmyperson
 Where ct.sname IN ('Service Charge', 'Market Rent')
-AND t.scode = 't0002183'
+AND t.scode = 't0003664'
