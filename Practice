@@ -1,4 +1,4 @@
-SELECT TOP 10
+SELECT
 	cr.hmy,
 	t.scode AS 'Tenant Code',
     ct.sname AS 'Description',
@@ -17,13 +17,13 @@ SELECT TOP 10
     WHEN cr.iinvfrequency=5 THEN 'Half Yearly'
     WHEN cr.iinvfrequency=8 THEN 'Weekly'
     END AS 'Invoice Period',
-    (cr.destimated * ca.dcontractarea) AS 'Amount',
+    (cr.dmonthlyamount/*estimated * ca.dcontractarea*/) AS 'Amount',
     ISNULL(d.cvatamount, 0) AS 'VAT',
     cr.ibillday AS 'Bill Date'
-FROM Camrule cr
-LEFT JOIN Tenant t ON t.hmyperson = cr.htenant
-LEFT JOIN Commamendments ca ON ca.htenant = t.hmyperson
+FROM Tenant t
+LEFT JOIN Camrule cr ON t.hmyperson = cr.htenant
 LEFT JOIN Chargtyp ct ON ct.hmy = cr.hchargecode
 LEFT JOIN Detail d ON d.htenant = t.hmyperson
+/*LEFT JOIN Commamendments ca ON ca.htenant = t.hmyperson*/
 Where ct.sname IN ('Service Charge', 'Market Rent')
 AND t.scode = 't0003664'
