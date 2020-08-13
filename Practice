@@ -27,3 +27,28 @@ LEFT JOIN Detail d ON d.htenant = t.hmyperson
 /*LEFT JOIN Commamendments ca ON ca.htenant = t.hmyperson*/
 Where ct.sname IN ('Service Charge', 'Market Rent')
 AND t.scode = 't0003664'
+
+
+SELECT TOP 10 
+	t.slastname AS 'Tenant Name',
+	t.scode AS 'Tenant Code',
+    ct.htenant AS 'Tenant ID',
+    p.saddr1 AS 'Property Name',
+    CASE
+    WHEN clt.isystemtype = 0 THEN 'Office'
+    WHEN clt.isystemtype = 1 THEN 'Industrial'
+    WHEN clt.isystemtype = 2 THEN 'Retail'
+    END AS 'Lease Type',
+    FORMAT(ct.dtcreated, 'MM/dd/yyyy') AS 'Date Created',
+    clt.sdesc AS 'Lease Description',
+    c.iestimatetype AS 'Estimate Type',
+    /*ISNULL(cht.scode, 'NA') AS 'Charge Code',*/
+    ISNULL(cht.sname, 'NA') AS 'Charge Description',
+    ISNULL(c.dmonthlyamount, 0) AS 'Total Amount'
+FROM Commtenant ct
+LEFT JOIN CommleaseType clt ON clt.hmy = ct.hleasetype
+LEFT JOIN Tenant t ON t.hmyperson = ct.htenant
+LEFT JOIN Property p ON p.hmy = t.hproperty
+LEFT JOIN Camrule c ON c.htenant = t.hmyperson
+LEFT JOIN Chargtyp cht ON cht.hmy = c.hchargecode
+WHERE t.scode IN ('t0004384','t0004391','t0004485','t0004372')
