@@ -1,3 +1,4 @@
+//11/08/2020//
 SELECT
 	cr.hmy,
 	t.scode AS 'Tenant Code',
@@ -28,7 +29,7 @@ LEFT JOIN Detail d ON d.htenant = t.hmyperson
 Where ct.sname IN ('Service Charge', 'Market Rent')
 AND t.scode = 't0003664'
 
-
+//13/08/2020//
 SELECT TOP 10 
 	t.slastname AS 'Tenant Name',
 	t.scode AS 'Tenant Code',
