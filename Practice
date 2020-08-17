@@ -29,6 +29,7 @@ LEFT JOIN Detail d ON d.htenant = t.hmyperson
 Where ct.sname IN ('Service Charge', 'Market Rent')
 AND t.scode = 't0003664'
 
+
 //13/08/2020//
 SELECT TOP 10 
 	t.slastname AS 'Tenant Name',
@@ -53,3 +54,55 @@ LEFT JOIN Property p ON p.hmy = t.hproperty
 LEFT JOIN Camrule c ON c.htenant = t.hmyperson
 LEFT JOIN Chargtyp cht ON cht.hmy = c.hchargecode
 WHERE t.scode IN ('t0004384','t0004391','t0004485','t0004372')
+
+
+//14-08-2020//
+SELECT
+	t.slastname AS 'Tenant Name',
+    t.sregnum AS 'Tenant VAT Number',
+    tr.sinvnum AS 'Invoice Number',
+    FORMAT(tr.sotherdate1, 'MM/dd/yyyy') AS 'Due Date',
+    FORMAT(tr.sdateoccurred, 'MM/dd/yyyy') AS 'Invoice Date',
+    FORMAT(tr.sotherdate2, 'MM/dd/yyyy') + ' - ' + FORMAT(tr.sotherdate3, 'MM/dd/yyyy') AS 'Charge From - Charge To',
+    cht.sname AS 'Charge Type',
+    ic.scode AS 'Currency',
+    d.cvatamount AS 'VAT Amount',
+    pr.scode AS 'Property Name'
+FROM Tenant t
+LEFT JOIN Trans tr ON tr.hperson = t.hmyperson
+LEFT JOIN Person p ON tr.hperson = p.hmy
+LEFT JOIN Chargtyp cht ON cht.hchargebackacct = tr.hoffsetacct
+LEFT JOIN intcurrency_info ic ON ic.hmy = tr.htrancurrency
+LEFT JOIN Detail d ON d.hchkorchg = tr.hmy
+LEFT JOIN Property pr ON pr.hmy = t.hproperty
+WHERE t.scode = 't0004130' 
+	AND tr.itype IN (6,7)
+
+
+//17-08-2020//
+SELECT
+	t.slastname AS 'Tenant Name',
+	ISNULL(t.sregnum, 'NA') AS 'Tenant VAT Number',
+	tr.sinvnum AS 'Invoice Number',
+	ISNULL(FORMAT(tr.sotherdate4, 'MM/dd/yyyy'), 'NA') AS 'VAT Date',
+	FORMAT(tr.sdateoccurred, 'MM/dd/yyyy') AS 'Due Date',
+	ISNULL(FORMAT(tr.sotherdate4, 'MM/dd/yyyy'), 'NA') AS 'Invoice Date',
+    CASE
+    WHEN tr.itype = 6 THEN 'Receipt'
+    WHEN tr.itype = 7 THEN 'Charge'
+    END AS 'Trans Type',
+	ISNULL(FORMAT(tr.sotherdate2, 'MM/dd/yyyy') + ' - ' + FORMAT(tr.sotherdate3, 'MM/dd/yyyy'), 'NA') AS 'Charge Period From - Charge Period To',
+	ISNULL(ct.sname, 'NA') AS 'Charge Type',
+	ici.scode AS 'Currency',
+	tr.stranamount AS 'VAT Base Amount',
+	ISNULL(tr.svatamount, 0) AS 'VAT Amount',
+	ISNULL(tr.stranamount + tr.svatamount, 0) AS 'VAT Base + VAT Amount',
+	ISNULL(ivr.drate, 0) AS 'VAT Rate',
+	p.saddr1 AS 'Property Name'
+FROM intcurrency_info ici
+LEFT JOIN Trans tr ON tr.htrancurrency = ici.hmy
+LEFT JOIN Tenant t ON t.hmyperson = tr.hperson
+LEFT JOIN Chargtyp ct ON ct.hmy = tr.hretentionacct
+LEFT JOIN intvatrate ivr ON ivr.hmy = tr.hvat
+LEFT JOIN Property p ON p.hmy = tr.hprop
+WHERE tr.itype IN (6, 7)
