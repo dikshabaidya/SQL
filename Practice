@@ -106,3 +106,23 @@ LEFT JOIN Chargtyp ct ON ct.hmy = tr.hretentionacct
 LEFT JOIN intvatrate ivr ON ivr.hmy = tr.hvat
 LEFT JOIN Property p ON p.hmy = tr.hprop
 WHERE tr.itype IN (6, 7)
+
+
+//18-08-2020//
+
+SELECT TOP 10
+	t.slastname AS 'Tenant Name',
+    cc.sremarks AS 'Charge Type',
+    FORMAT(cc.dtmmyy, 'MM-yyyy') AS 'Post Month',
+    FORMAT(cc.dtfrom, 'MM-dd-yyyy') AS 'Date From',
+    FORMAT(cc.dtto, 'MM-dd-yyyy') AS 'Date To',
+    CAST(cc.dbilled AS Varchar(20)) + ' ' + ici.scode AS 'Net Amount',
+    CAST(ISNULL(cc.dvatamount, 0) AS Varchar(20)) + ' ' + ici.scode AS 'VAT Amount',
+    CAST(cc.dbilled + ISNULL(cc.dvatamount, 0) AS Varchar(20)) + ' ' + ici.scode AS 'Gross Amount'
+FROM Intcurrency_info ici 
+LEFT JOIN Trans tr ON tr.htrancurrency = ici.hmy
+LEFT JOIN Camcharg cc ON cc.hpostref = tr.hmy
+LEFT JOIN Camrule cr ON cr.hmy = cc.hcamrule
+LEFT JOIN Tenant t ON t.hmyperson = tr.hperson
+WHERE t.slastname = 'saakshi bhatnagar' /* NOT NULL*/
+    AND cc.sremarks IS NOT NULL
