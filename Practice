@@ -126,3 +126,18 @@ LEFT JOIN Camrule cr ON cr.hmy = cc.hcamrule
 LEFT JOIN Tenant t ON t.hmyperson = tr.hperson
 WHERE t.slastname = 'saakshi bhatnagar' /* NOT NULL*/
     AND cc.sremarks IS NOT NULL
+
+//10-09-2020//
+
+CREATE PROCEDURE dunit
+AS
+SELECT 
+Amount,
+Percentage,
+Include,
+CASE
+WHEN Include = 'Yes' THEN Amount + (Amount*Percentage/100)
+ELSE Amount
+END AS Final_Amount
+FROM UNITBUT9
+GO
