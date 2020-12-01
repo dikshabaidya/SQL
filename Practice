@@ -141,3 +141,44 @@ ELSE Amount
 END AS Final_Amount
 FROM UNITBUT9
 GO
+
+
+//01-12-2020//
+
+SELECT 
+row_number() over(partition by p.hmy order by p.hmy) AS 'RowNum',
+p.scode AS 'PropCode',
+p.hmy AS 'PropID',
+p.saddr1 AS 'PropName',
+r.sdesc AS 'ContRole',
+CASE
+WhEN co.hperson IS NOT NULL THEN pr.sfirstname + ' ' + pr.ulastname
+WHEN co.hcontact IS NOT NULL THEN c.sFirstname + ' ' + c.slastname 
+WHEN v.hmyperson IS NOT NULL THEN v.ulastname
+WHEN o.hmyperson IS NOT NULL THEN o.ulastname
+END AS 'ContName',
+CASE
+When co.hperson IS NOT NULL THEN pr.semail
+WHEN co.hcontact IS NOT NULL THEN c.semail
+END AS 'EmailID',
+CASE
+WHEN co.bprimary = 1 THEN 'Yes'
+WHEN co.bprimary = 0 THEN 'No'
+END AS 'Primary',
+CASE
+WHEN pmg.ucode IS NOT NULL THEN pmg.ucode
+ELSE 'NA'
+END AS 'UserGroup',
+v.hmyperson AS 'Vendor',
+o.hmyperson AS 'Owner'
+FROM Property p
+LEFT JOIN Contactxref co ON co.hrecord = p.hmy
+LEFT JOIN Person pr ON pr.hmy = co.hperson
+LEFT JOIN Contact c ON c.hmy = co.hcontact
+LEFT JOIN Role r ON r.hmy = co.hrole
+LEFT JOIN Owner o ON o.hmyperson = pr.hmy
+LEFT JOIN Vendor v ON v.hmyperson = pr.hmy
+LEFT JOIN Premployee pe ON pe.hmyperson = pr.hmy
+LEFT JOIN Pmuser pmu ON pmu.hmy = pe.huser
+LEFT JOIN Pmgroup pmg ON pmg.hmy = pmu.hgroup
+WHERE 1=1
